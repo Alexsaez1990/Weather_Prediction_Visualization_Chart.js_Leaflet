@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+            integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+            crossorigin=""/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+            <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+        crossorigin="">
+    </script>
+    <script src="../static/Proj4Leaflet-master/lib/proj4-compressed.js"></script>
+    <script src="../static/Proj4Leaflet-master/src/proj4leaflet.js"></script>
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js?v1.3.0"></script>
+    <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   
+    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   
+    crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/dist/leaflet.ajax.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+    <link rel="stylesheet" href="../static/main_mapa_graficos.css"/>
+    <title>Mapa generador gráficos</title>
+</head>
+<body>
+    <div id="content">
+        <div id="mapa"></div>
+        <div id="graph-container">
+            <div id="chartToggleCheckboxes">
+                <label>
+                    <input type="checkbox" id="temperatureHumidityCheckbox" name="chartGroup" value="temperatureHumidity"> Temperatura & Humedad
+                </label>
+                <label>
+                    <input type="checkbox" id="polarCheckbox" name="chartGroup" value="polar"> Gráfico Vientos
+                </label>
+                <label>
+                    <input type="checkbox" id="precipitationCloudCheckbox" name="chartGroup" value="precipitationCloud"> Precipitaciones y nubosidad
+                </label>
+                <div id="chartOptions">
+                    <label for="daysSelector">N° días:</label>
+                    <select id="daysSelector">
+                        <option value="1">1 Día</option>
+                        <option value="2" selected>2 Días</option>
+                        <option value="3">3 Días</option>
+                        <option value="4">4 Días</option>
+                        <option value="5">5 Días</option>
+                    </select>
+                </div> 
+            </div>     
+            <div id="temperatureChartContainer">
+                <canvas id="temperatureChart" height="220%"></canvas>
+            </div>
+            <div id="humidityChartContainer">
+                <canvas id="humidityChart" height="205%"></canvas>
+            </div>
+            <div id="polarChartContainer">
+                <canvas id="polarChart"></canvas>   
+                <div class="legendBox">
+                    <button id= "1Button" class="item"></button>
+                    <button id= "2Button" class="item"></button>
+                    <button id= "3Button" class="item"></button>
+                    <button id= "4Button" class="item"></button>
+                    <button id= "5Button" class="item"></button>
+                    <button id= "6Button" class="item"></button>
+                    <button id= "7Button" class="item"></button>
+                    <button id= "8Button" class="item"></button>
+                </div>   
+            </div>
+            
+            <div id="modalContainer" class="modal-background">
+                <div class="modal">
+                    <div class="modal-header">
+                        <h2 class="modal-tittle"><span class="label"></span></h2>
+                        <button id="close" onclick="modalClose()" class="btn danger">Cerrar</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="windChartContainer">
+                            <canvas id="windChart" height="320%"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="precipitationCloudChartContainer">
+                <canvas id="precipitationChart" height="285%"></canvas>
+            </div>
+            <div id="cloudChartContainer">
+                <canvas id="cloudChart" height="220%"></canvas>
+            </div>
+            
+        </div>
+
+    </div>
+    <script src="../static/main_mapa_graficos.js" method="post"></script>
+</body>
+</html>
