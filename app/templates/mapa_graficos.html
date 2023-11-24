@@ -27,6 +27,9 @@
     <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+
 
     <link rel="stylesheet" href="../static/main_mapa_graficos.css"/>
     <title>Mapa generador gráficos</title>
@@ -55,6 +58,8 @@
                         <option value="5">5 Días</option>
                     </select>
                 </div> 
+                <button id="exportButton">Exportar</button>
+
             </div>     
             <div id="temperatureChartContainer">
                 <canvas id="temperatureChart" height="220%"></canvas>
@@ -95,6 +100,10 @@
             <div id="cloudChartContainer">
                 <canvas id="cloudChart" height="220%"></canvas>
             </div>
+
+            <!--<div id="hovmollerTemperatureChartContainer">
+                <canvas id="hovmollerTemperatureChart" height="220%"></canvas>
+            </div>--> <!-- IMPLEMENTACIÓN FUNCIONALIDAD EN PROGRESO-->
             
         </div>
 

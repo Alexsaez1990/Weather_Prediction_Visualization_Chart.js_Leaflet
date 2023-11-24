@@ -22,6 +22,7 @@ let polarChartGusts = [];
 let windCharts = [];
 var flag_modal_visible = false;
 let precipitationCloudsChart = [];
+let hovmollerTemperatureChart = []
 let marker = null;
 
 
@@ -109,11 +110,18 @@ function callCharts(lat, lng, days) {
     })
     .then(data => { // Recibo los datos de Python
 
+         // Add the export button click event handler dynamically
+        console.log('Adding event listener for export button');
+        document.getElementById('exportButton').addEventListener('click', function() {
+            exportToExcel(data); // Assuming data is available here
+        });
+
         createTemperatureHumidityChart(data);
         createPolarChart(data);
         createPrecipitationCloudsChart(data);
+        //createHovmollerTemperatureChart(data);
 
-        checkboxesFunctionality();       
+        checkboxesFunctionality();    
     })
     .catch(error => {
         console.error('Error: ', error);
@@ -177,6 +185,46 @@ function modalClose() {
     modalContainer.style.display = "none";
 }
 
+
+// Función para exportar contenido de data a excel
+function exportToExcel(data) {
+    console.log("DATA");
+    console.log(data);
+    const hourlyData = data.weatherData.hourly;
+    console.log("hourlyData");
+    console.log(hourlyData);
+
+    // Extract time labels
+    const timeLabels = hourlyData.time;
+
+    // Extract all other hourly data
+    const exportedData = timeLabels.map((time, index) => {
+        return {
+            Time: time,
+            Temperature: hourlyData.temperature_2m[index],
+            Dewpoint: hourlyData.dewpoint_2m[index],
+            CloudCover: hourlyData.cloudcover[index],
+            Precipitation: hourlyData.precipitation[index],
+            PrecipitationProbability: hourlyData.precipitation_probability[index],
+            RelativeHumidity: hourlyData.relativehumidity_2m[index],
+            WindDirection: hourlyData.winddirection_10m[index],
+            WindGusts: hourlyData.windgusts_10m[index],
+            WindSpeed: hourlyData.windspeed_10m[index]
+        };
+    });
+
+    // Create a new workbook
+    const wb = XLSX.utils.book_new();
+
+    // Add a worksheet
+    const ws = XLSX.utils.json_to_sheet(exportedData);
+
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'HourlyData');
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, 'Data.xlsx');
+}
 
 // Chart temperatura y humedad
 function createTemperatureHumidityChart(data) {
@@ -1313,6 +1361,61 @@ function createPrecipitationCloudsChart(data) {
 }
 
 
+///////////////////////////////////////////////////////////////////////HOVMOLLER DIAGRAM EN PROGRESO//////////////////////////////////////////////////////////
+/*function createHovmollerTemperatureChart(data) {
+
+    // Limpiamos los elementos por si tienen contenido previo (al hacer click de nuevo en el mapa para generar un nuevo graph)
+    const hovmollerTemperatureChartCanvas = document.getElementById('hovmollerTemperatureChart');
+
+    const hovmollerTemperatureChartCtx = hovmollerTemperatureChartCanvas.getContext('2d');
+
+    hovmollerTemperatureChartCtx.clearRect(0, 0, hovmollerTemperatureChartCanvas.width, hovmollerTemperatureChartCanvas.height);
+
+    if (hovmollerTemperatureChart) {
+        hovmollerTemperatureChart.forEach(chart => {
+            chart.destroy();
+        });
+    }
+
+    const temperatureData = data.weatherData.hourly.temperature_2m;
+    const dewpointData = data.weatherData.hourly.dewpoint_2m;
+    const timeLabels = data.weatherData.hourly.time;
+
+
+    const traceCombined = {
+        x: timeLabels,
+        y: Array.from({ length: timeLabels.length }, (_, i) => i),
+        z: [temperatureData, dewpointData],
+        type: 'heatmap',
+        colorscale: 'Viridis',
+        showscale: true,
+        name: 'Temperature (°C)',
+        hovertemplate: 'Tiempo: %{x}<br>Index: %{y}<br>Temperatura: %{z}°C',
+    };
+
+    const layout = {
+        title: 'Diagrama Hovmoller',
+        xaxis: {
+            title: 'Tiempo',
+            tickvals: timeLabels,
+            ticktext: timeLabels.map(date => new Date(date).toLocaleDateString('en-US', { hour: '2-digit', minute: '2-digit' })),
+        },
+        yaxis: {
+            title: 'Index',
+            showline: false,
+        },
+        margin: {t: 40},
+    };
+
+    Plotly.newPlot('hovmollerTemperatureChartContainer', [traceCombined], layout);
+
+
+    hovmollerTemperatureChart = [traceCombined];
+}*/
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // Funcionalidad botón para mostrar charts
 function setupChartToggle() {
     const checkboxes = document.querySelectorAll('#chartToggleCheckboxes input[type="checkbox"]');
@@ -1365,5 +1468,6 @@ function toggleCharts() {
         cloudChartContainer.style.display = precipitationCloudCheckbox.checked ? 'block' : 'none';
     }
 }
+
 
 

@@ -192,6 +192,24 @@ input[type="checkbox"],
     border: 1px solid #ccc;
 }
 
+#exportButton {
+    padding: 8px;
+    font-size: 0.8em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-left: 5%;
+    margin-top: 0.3%;
+}
+
+#exportButton:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+#exportButton:active {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
 /* Estilo options en el selector */
 #daysSelector option {
     background-color: #fff;
@@ -211,6 +229,6 @@ input[type="checkbox"],
 }
 
 #chartOptions {
-    margin-left: 15%;
+    margin-left: 5%;
     margin-top: 0.3%;
 }
