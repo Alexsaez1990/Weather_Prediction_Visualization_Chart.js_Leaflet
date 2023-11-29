@@ -45,8 +45,7 @@ if(screen.width >= 712){
     map.setZoom(4);
 }
 
-
-map.on('click', function(e){
+function handleMapClick(e) {
     lat = e.latlng.lat; // Obtengo latitud
     lng = e.latlng.lng; // Obtengo longitud
     const daysSelector = document.getElementById('daysSelector');
@@ -59,6 +58,9 @@ map.on('click', function(e){
     // Crea nuevo marker
     marker = L.marker(e.latlng).addTo(map);
     marker.bindPopup(`Coords. ${lat.toFixed(4)}, ${lng.toFixed(4)}`).openPopup();
+
+    map.flyTo(e.latlng, 10);
+
     console.log(JSON.stringify({ lat: lat, lng: lng, days: days }))
 
     // Show the graph container
@@ -89,11 +91,21 @@ map.on('click', function(e){
         days = parseInt(daysSelector.value);
         callCharts(lat, lng, days);
     });
+}
 
-});
+map.on('click', handleMapClick);
 
 // Función para comunicar con el backend, traer info y generar charts
 function callCharts(lat, lng, days) {
+    const currentBounds = map.getBounds();
+    updateMap(lat, lng);
+
+    if (!currentBounds.equals(map.getBounds())) {
+        preset_zoom = 8
+        map.setView([lat, lng+2.5], preset_zoom);
+        boundsAdjusted = true;
+    }
+
     fetch('http://localhost:5000/process', { // Me conecto con el servidor para enviar lat y lng
         method: 'POST',
         headers: {
@@ -109,9 +121,6 @@ function callCharts(lat, lng, days) {
         }
     })
     .then(data => { // Recibo los datos de Python
-
-         // Add the export button click event handler dynamically
-        console.log('Adding event listener for export button');
         document.getElementById('exportButton').addEventListener('click', function() {
             exportToExcel(data); // Assuming data is available here
         });
@@ -126,6 +135,18 @@ function callCharts(lat, lng, days) {
     .catch(error => {
         console.error('Error: ', error);
     })
+}
+
+function updateMap(lat, lng) {
+    // Center the map on the selected coordinates
+    map.setView([lat, lng]);
+
+    // Display a label on the map
+    if (marker) {
+        map.removeLayer(marker);
+    }
+    marker = L.marker([lat, lng]).addTo(map);
+    marker.bindPopup(`Coords. ${lat.toFixed(4)}, ${lng.toFixed(4)}`).openPopup();
 }
 
 function checkboxesFunctionality() {
@@ -188,11 +209,7 @@ function modalClose() {
 
 // Función para exportar contenido de data a excel
 function exportToExcel(data) {
-    console.log("DATA");
-    console.log(data);
     const hourlyData = data.weatherData.hourly;
-    console.log("hourlyData");
-    console.log(hourlyData);
 
     // Extract time labels
     const timeLabels = hourlyData.time;
@@ -1470,4 +1487,79 @@ function toggleCharts() {
 }
 
 
+// Selector lugares
+document.getElementById('placeSelector').addEventListener('change', function () {
+    const selectedPlace = this.value;
+    // Get the coordinates for the selected place
+    const coordinates = getCoordinatesForPlace(selectedPlace);
+
+    handleMapClick({ latlng: L.latLng(coordinates.lat, coordinates.lng) });
+});
+
+function getCoordinatesForPlace(place) {
+    // Define your predefined places and their coordinates
+    const places = {
+        place1: { lat: -28.734141, lng: -71.261603 },
+        place2: { lat: -28.756765, lng: -70.840796 },
+        place3: { lat: -28.86, lng: -70.11 },
+        place4: { lat: -29.92, lng: -71.2 },
+        place5: { lat: -30.041812, lng: -70.696002 },
+        place6: { lat: -30.07801, lng: -70.406414 },
+        place7: { lat: -30.616463, lng: -71.623589 },
+        place8: { lat: -30.592853, lng: -71.176217 },
+        place9: { lat: -30.64, lng: -70.63 },
+        place10: { lat: -31.827902, lng: -71.483889 },
+        place11: { lat: -31.65, lng: -71.17 },
+        place12: { lat: -31.72, lng: -70.65 },
+        place13: { lat: -33.06, lng: -71.55 },
+        place14: { lat: -32.82, lng: -71.23 },
+        place15: { lat: -32.8, lng: -70.57 },
+        place16: { lat: -33.89, lng: -71.45 },
+        place17: { lat: -33.44, lng: -70.74 },
+        place18: { lat: -33.61, lng: -70.35 },
+        place19: { lat: -34.4, lng: -71.99 },
+        place20: { lat: -34.47, lng: -70.98 },
+        place21: { lat: -34.558863, lng: -70.552021 },
+        place22: { lat: -35.7, lng: -72.51 },
+        place23: { lat: -35.53, lng: -71.47 },
+        place24: { lat: -35.824991, lng: -70.821372 },
+        place25: { lat: -36.722749, lng: -72.893586 },
+        place26: { lat: -36.608984, lng: -72.112356 },
+        place27: { lat: -36.89524, lng: -71.507987 },
+        place28: { lat: -37.504235, lng: -73.403308 },
+        place29: { lat: -37.47124, lng: -72.389588 },
+        place30: { lat: -37.72829, lng: -71.372456 },
+        place31: { lat: -37.87582, lng: -72.617415 },
+        place32: { lat: -38.307531, lng: -73.286601 },
+        place33: { lat: -38.444054, lng: -71.252385 },
+        place34: { lat: -39.036237, lng: -73.220395 },
+        place35: { lat: -39.024394, lng: -72.510049 },
+        place36: { lat: -39.16, lng: -71.72 },
+        place37: { lat: -39.81, lng: -73.25 },
+        place38: { lat: -40.114952, lng: -72.609546 },
+        place39: { lat: -40.241647, lng: -72.007745 },
+        place40: { lat: -41.341177, lng: -73.776948 },
+        place41: { lat: -41.431673, lng: -72.917233 },
+        place42: { lat: -41.580992, lng: -72.161589 },
+        place43: { lat: -42.526678, lng: -73.822196 },
+        place44: { lat: -42.944771, lng: -72.672893 },
+        place45: { lat: -43.342955, lng: -72.071093 },
+        place46: { lat: -45.172706, lng: -74.013161 },
+        place47: { lat: -45.410652, lng: -72.704457 },
+        place48: { lat: -45.581974, lng: -72.047726 },
+        place49: { lat: -46.324365, lng: -74.569955 },
+        place50: { lat: -47.257114, lng: -72.566449 },
+        place51: { lat: -46.519481, lng: -71.847851 },
+        place52: { lat: -51.481609, lng: -73.871583 },
+        place53: { lat: -53.149136, lng: -70.887739 },
+        place54: { lat: -52.271114, lng: -70.252423 },
+        place55: { lat: -51.16752, lng: -72.950731 },
+        place56: { lat: -50.724941, lng: -72.436768 },
+        place57: { lat: -53.813005, lng: -71.351734 },
+        // Add more predefined places and coordinates as needed
+    };
+
+    // Return the coordinates for the selected place
+    return places[place];
+}
 

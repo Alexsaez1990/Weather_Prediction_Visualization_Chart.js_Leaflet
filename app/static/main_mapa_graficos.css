@@ -232,3 +232,30 @@ input[type="checkbox"],
     margin-left: 5%;
     margin-top: 0.3%;
 }
+
+#placeOptions {
+    display: block;
+    position: absolute;
+    top: 1%;
+    left: 5%; 
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 5px;
+    z-index: 10;
+}
+
+#placeSelector {
+    padding: 8px;
+    font-size: 0.8em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+#placeSelector option {
+    background-color: #fff;
+    color: #333;
+}
+
+#placeSelector option:hover {
+    background-color: #f0f0f0;
+}
