@@ -243,6 +243,14 @@ function exportToExcel(data) {
     XLSX.writeFile(wb, 'Data.xlsx');
 }
 
+// Función calcular variable HCFM
+function calculate_HCFM(humidityData, temperatureData) {
+    const roundedHumidity = humidityData.map(humidity => Math.round(humidity));
+    const roundedTemperature = temperatureData.map(temperature => Math.round(temperature));
+
+    return roundedHumidity.map((humidity, index) => Math.round((0.297374 + (0.262 * humidity) - (0.00982 * roundedTemperature[index])) * 100) / 100);
+}
+
 // Chart temperatura y humedad
 function createTemperatureHumidityChart(data) {
 
@@ -265,6 +273,7 @@ function createTemperatureHumidityChart(data) {
     const temperatureData = data.weatherData.hourly.temperature_2m;
     const humidityData = data.weatherData.hourly.relativehumidity_2m;
     const dewpointData = data.weatherData.hourly.dewpoint_2m;
+    const hcfmData = calculate_HCFM(humidityData, temperatureData);
 
     // Formateamos las fechas para que tengan el formato correcto para Luxon y Chart
     const timeLabels = data.weatherData.hourly.time;
@@ -471,7 +480,6 @@ function createTemperatureHumidityChart(data) {
         },
         plugins: [topScale, hoverLabel]
     });
-
     const humidityChart = new Chart(humidityChartCtx, {
         type: 'line',
         data: {
@@ -483,6 +491,12 @@ function createTemperatureHumidityChart(data) {
                     borderColor: 'rgba(75, 192, 192, 1)',
                     yAxisID: 'humidity-y-axis',
                 },
+                {
+                    label: 'HCFM (%)',
+                    data: hcfmData,
+                    borderColor: 'rgba(255, 165, 0, 0.7)',
+                    yAxisID: 'hcfm-y-axis',
+                }
             ],
         },
         options: {
@@ -504,12 +518,12 @@ function createTemperatureHumidityChart(data) {
                     suggestedMax: timeLabels[timeLabels.length -1],
                     suggestedMin: timeLabels[0],
                 },
-                y: {
+                'hcfm-y-axis': {
                     position: 'right',
                     beginAtZero: true,
                     title: {
                         display: false,
-                        text: 'Humidity (%)',
+                        text: 'HCFM (%)',
                     },
                     grid: {
                         drawOnChartArea: false,
@@ -721,6 +735,7 @@ function createPolarChart(data) {
                         pointStyle: 'triangle',
                         boxWidth: 20,
                     },
+                    display: false,
                 },
                 title: {
                     display: true,
